@@ -3,27 +3,34 @@ package com.example.snakegame
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import com.example.snakegame.databinding.ActivityMainBinding
+import com.example.snakegame.databinding.ContentMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-
+    private lateinit var contentbinding: ContentMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
+        contentbinding = ContentMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setContentView(contentbinding.root)
         setSupportActionBar(binding.toolbar)
+        //傾聽SnakeViewModel身上資料及方法
         val viewModel = ViewModelProvider(this).get(SnakeViewModel::class.java)
+        viewModel.body.observe(this,{
+        })
+        viewModel.apple.observe(this,{
+
+        })
+        viewModel.score.observe(this,{
+
+        })
         /*val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)*/
@@ -32,6 +39,7 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
+        viewModel.start()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
