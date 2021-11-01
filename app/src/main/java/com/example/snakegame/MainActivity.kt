@@ -21,9 +21,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setContentView(contentbinding.root)
         setSupportActionBar(binding.toolbar)
+        val gameView = findViewById<GameView>(R.id.game_view)
+        //val game_View = contentbinding.game_view
         //傾聽SnakeViewModel身上資料及方法
         val viewModel = ViewModelProvider(this).get(SnakeViewModel::class.java)
         viewModel.body.observe(this,{
+            gameView.snakebody = it
+            gameView.invalidate()
         })
         viewModel.apple.observe(this,{
 
@@ -35,11 +39,12 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)*/
 
+        viewModel.start()
+
         binding.fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
-        viewModel.start()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
