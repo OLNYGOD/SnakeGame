@@ -10,17 +10,19 @@ class SnakeViewModel: ViewModel() {
     val body = MutableLiveData<List<Position>>()
     val apple = MutableLiveData<Position>()
     val score = MutableLiveData<Int>()
+    val size = MutableLiveData<Float>()
+    val gameStatus = MutableLiveData<GameStatus>()
     val snakeBody = mutableListOf<Position>()
-    val initialDelay = 500
+    val initialDelay = 1000
     val period = 500
-    var direction = Direction.UP
+    var direction = Direction.LEFT
     fun start(){
         snakeBody.apply {
             //初始位置設定
-            add(Position(100, 100))
-            add(Position(101, 100))
-            add(Position(102, 100))
-            add(Position(103, 100))
+            add(Position(10, 10))
+            add(Position(11, 10))
+            add(Position(12, 10))
+            add(Position(13, 10))
         }.also {
             //將蛇身體的位置存至body裏頭，傳至Main中
             body.value = it
@@ -33,6 +35,10 @@ class SnakeViewModel: ViewModel() {
                     Direction.LEFT -> x--
                     Direction.RIGHT -> x++
                 }
+                if( x<0 || x>20 || y<0 || y>20){
+                    cancel()
+                    gameStatus.postValue(GameStatus.GAMEOVER)
+                }
             }
             snakeBody.add(0, fristPosition) //新增一個位置在snakeBody前面
             snakeBody.removeLast()               //移除一個位置在snakeBody後面
@@ -40,7 +46,7 @@ class SnakeViewModel: ViewModel() {
         }
     }
     fun move(dir: Direction){
-
+        direction = dir
     }
     fun reset(){
 
@@ -52,4 +58,8 @@ data class Position(var x: Int, var y: Int)
 //做方向集合
 enum class Direction{
     UP,DOWN,LEFT,RIGHT
+}
+
+enum class GameStatus{
+    ONGOING, GAMEOVER
 }

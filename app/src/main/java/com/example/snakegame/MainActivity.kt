@@ -1,16 +1,20 @@
 package com.example.snakegame
 
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.snakegame.databinding.ActivityMainBinding
 import com.example.snakegame.databinding.ContentMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    private val TAG: String? = MainActivity::class.java.simpleName
     private lateinit var binding: ActivityMainBinding
     private lateinit var contentbinding: ContentMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,12 +25,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setContentView(contentbinding.root)
         setSupportActionBar(binding.toolbar)
-        val gameView = findViewById<GameView>(R.id.game_view)
+        var gameView = findViewById<GameView>(R.id.game_view)
+        val up = contentbinding.up
+        val down = contentbinding.down
+        val left = contentbinding.left
+        val right = contentbinding.right
         //val game_View = contentbinding.game_view
         //傾聽SnakeViewModel身上資料及方法
         val viewModel = ViewModelProvider(this).get(SnakeViewModel::class.java)
         viewModel.body.observe(this,{
-            gameView.snakebody = it
+            gameView.snakeBody = it
             gameView.invalidate()
         })
         viewModel.apple.observe(this,{
@@ -35,12 +43,27 @@ class MainActivity : AppCompatActivity() {
         viewModel.score.observe(this,{
 
         })
+        viewModel.size.observe(this,{
+
+        })
+        viewModel.gameStatus.observe(this,{
+            if ( it == GameStatus.GAMEOVER){
+                AlertDialog.Builder(this@MainActivity)
+                    .setTitle("Game")
+                    .setMessage("GameOver")
+                    .setPositiveButton("OK",null)
+                    .show()
+            }
+        })
         /*val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)*/
-
+        //Log.d(TAG, "MainActivity" + 1)
         viewModel.start()
-
+        up.setOnClickListener { viewModel.move(dir = Direction.UP)}
+        down.setOnClickListener { viewModel.move(dir = Direction.DOWN) }
+        left.setOnClickListener { viewModel.move(dir = Direction.LEFT) }
+        right.setOnClickListener { viewModel.move(dir = Direction.RIGHT) }
         binding.fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
