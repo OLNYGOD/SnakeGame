@@ -29,15 +29,15 @@ class SnakeViewModel: ViewModel() {
         }//速率固定器
         fixedRateTimer("Timer", true, initialDelay.toLong(), period.toLong()){
             val fristPosition = snakeBody.first().copy().apply {
+                if( x<0 || x>20 || y<0 || y>20){
+                    cancel()
+                    gameStatus.postValue(GameStatus.GAMEOVER)
+                }
                 when(direction){
                     Direction.UP -> y--
                     Direction.DOWN -> y++
                     Direction.LEFT -> x--
                     Direction.RIGHT -> x++
-                }
-                if( x<0 || x>20 || y<0 || y>20){
-                    cancel()
-                    gameStatus.postValue(GameStatus.GAMEOVER)
                 }
             }
             snakeBody.add(0, fristPosition) //新增一個位置在snakeBody前面
