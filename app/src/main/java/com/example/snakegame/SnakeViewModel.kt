@@ -35,8 +35,8 @@ class SnakeViewModel: ViewModel() {
         fixedRateTimer("Timer", true, initialDelay.toLong(), period.toLong()){
             val fristPosition = snakeBody.first().copy().apply {
                 if( x<0 || x>20 || y<0 || y>20){
-                    cancel()
                     gameStatus.postValue(GameStatus.GAMEOVER)
+                    cancel()
                 }
                 when(direction){
                     Direction.UP -> y--
@@ -45,6 +45,11 @@ class SnakeViewModel: ViewModel() {
                     Direction.RIGHT -> x++
                 }
             }
+            if ( snakeBody.contains(fristPosition)){
+                gameStatus.postValue(GameStatus.GAMEOVER)
+                cancel()
+            }
+            body.postValue(snakeBody)
             snakeBody.add(0, fristPosition) //新增一個位置在snakeBody前面
             //如果沒吃到蘋果，移除snakeBody最後面位置
             if( fristPosition != applePosition){

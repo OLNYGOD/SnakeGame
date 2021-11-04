@@ -65,9 +65,8 @@ class MainActivity : AppCompatActivity() {
         down.setOnClickListener { viewModel.move(dir = Direction.DOWN) }
         left.setOnClickListener { viewModel.move(dir = Direction.LEFT) }
         right.setOnClickListener { viewModel.move(dir = Direction.RIGHT) }
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        binding.replay.setOnClickListener { view ->
+            viewModel.reset()
         }
     }
 
