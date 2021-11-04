@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             gameView.invalidate()
         })
         viewModel.score.observe(this,{
-
+            contentbinding.score.setText(it.toString())
         })
         viewModel.size.observe(this,{
 

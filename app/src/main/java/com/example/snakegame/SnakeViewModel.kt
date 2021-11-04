@@ -7,8 +7,6 @@ import kotlin.random.Random
 
 //遊戲設計
 class SnakeViewModel: ViewModel() {
-    private lateinit var applePosition: Position
-
     //MutableLiveData將ViewModel資料包在裡面
     val body = MutableLiveData<List<Position>>()
     val apple = MutableLiveData<Position>()
@@ -19,7 +17,11 @@ class SnakeViewModel: ViewModel() {
     val initialDelay = 1000
     val period = 500
     var direction = Direction.LEFT
+    private var scorePoint: Int = 0
+    private lateinit var applePosition: Position
+
     fun start(){
+        score.postValue(scorePoint)
         snakeBody.apply {
             //蛇初始位置設定
             add(Position(10, 10))
@@ -48,9 +50,11 @@ class SnakeViewModel: ViewModel() {
             if( fristPosition != applePosition){
                 snakeBody.removeLast()
             }else{
+                scorePoint += 100
+                score.postValue(scorePoint)
                 generateApple()
             }
-            body.postValue(snakeBody)
+
         }
         generateApple()
     }
@@ -62,7 +66,19 @@ class SnakeViewModel: ViewModel() {
     }
 
     fun generateApple(){
-        applePosition = Position( Random.nextInt(20), Random.nextInt(20))
+        //fix applePosition over snakeBody
+        val allPonit = mutableListOf<Position>().apply {
+            for ( i in 0..19){
+                for (j in 0..19)
+                    add(Position(i, j))
+            }
+        }
+        allPonit.removeAll(snakeBody)
+        allPonit.shuffle()  //隨機排列
+        applePosition = allPonit[0]
+        /*do {
+            applePosition = Position( Random.nextInt(20), Random.nextInt(20))
+        }while (snakeBody.contains(applePosition))*/
         apple.postValue(applePosition)
     }
 }
