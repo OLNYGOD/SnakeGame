@@ -38,7 +38,8 @@ class MainActivity : AppCompatActivity() {
             gameView.invalidate()
         })
         viewModel.apple.observe(this,{
-
+            gameView.apple = it
+            gameView.invalidate()
         })
         viewModel.score.observe(this,{
 

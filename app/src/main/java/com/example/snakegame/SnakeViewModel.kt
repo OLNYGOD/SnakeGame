@@ -3,6 +3,7 @@ package com.example.snakegame
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlin.concurrent.fixedRateTimer
+import kotlin.random.Random
 
 //遊戲設計
 class SnakeViewModel: ViewModel() {
@@ -18,14 +19,14 @@ class SnakeViewModel: ViewModel() {
     var direction = Direction.LEFT
     fun start(){
         snakeBody.apply {
-            //初始位置設定
+            //蛇初始位置設定
             add(Position(10, 10))
             add(Position(11, 10))
             add(Position(12, 10))
             add(Position(13, 10))
         }.also {
             //將蛇身體的位置存至body裏頭，傳至Main中
-            body.value = it
+            body.postValue(it)
         }//速率固定器
         fixedRateTimer("Timer", true, initialDelay.toLong(), period.toLong()){
             val fristPosition = snakeBody.first().copy().apply {
@@ -44,12 +45,18 @@ class SnakeViewModel: ViewModel() {
             snakeBody.removeLast()               //移除一個位置在snakeBody後面
             body.postValue(snakeBody)
         }
+        generateApple()
     }
     fun move(dir: Direction){
         direction = dir
     }
     fun reset(){
 
+    }
+
+    fun generateApple(){
+        val applePosition = Position( Random.nextInt(20), Random.nextInt(20))
+        apple.postValue(applePosition)
     }
 }
 //儲存位置資料
