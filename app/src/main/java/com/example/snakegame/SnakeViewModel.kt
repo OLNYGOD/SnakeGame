@@ -1,5 +1,6 @@
 package com.example.snakegame
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlin.concurrent.fixedRateTimer
@@ -7,6 +8,8 @@ import kotlin.random.Random
 
 //遊戲設計
 class SnakeViewModel: ViewModel() {
+    private val TAG: String? = SnakeViewModel::class.java.simpleName
+
     //MutableLiveData將ViewModel資料包在裡面
     val body = MutableLiveData<List<Position>>()
     val apple = MutableLiveData<Position>()
@@ -14,11 +17,12 @@ class SnakeViewModel: ViewModel() {
     val size = MutableLiveData<Float>()
     val gameStatus = MutableLiveData<GameStatus>()
     val snakeBody = mutableListOf<Position>()
-    val initialDelay = 1000
-    val period = 500
+    var initialDelay = 1000
+    var period = 500
     var direction = Direction.LEFT
     private var scorePoint: Int = 0
     private lateinit var applePosition: Position
+    var resetStatus = false
 
     fun start(){
         score.postValue(scorePoint)
@@ -34,9 +38,9 @@ class SnakeViewModel: ViewModel() {
         }//速率固定器
         fixedRateTimer("Timer", true, initialDelay.toLong(), period.toLong()){
             val fristPosition = snakeBody.first().copy().apply {
-                if( x<0 || x>20 || y<0 || y>20){
-                    gameStatus.postValue(GameStatus.GAMEOVER)
+                if( x<0 || x>=20 || y<0 || y>=20){
                     cancel()
+                    gameStatus.postValue(GameStatus.GAMEOVER)
                 }
                 when(direction){
                     Direction.UP -> y--
@@ -45,7 +49,7 @@ class SnakeViewModel: ViewModel() {
                     Direction.RIGHT -> x++
                 }
             }
-            if ( snakeBody.contains(fristPosition)){
+            if (snakeBody.contains(fristPosition)){
                 gameStatus.postValue(GameStatus.GAMEOVER)
                 cancel()
             }
@@ -59,7 +63,10 @@ class SnakeViewModel: ViewModel() {
                 score.postValue(scorePoint)
                 generateApple()
             }
-
+            if (resetStatus){
+                cancel()
+                resetStatus = false
+            }
         }
         generateApple()
     }
@@ -67,7 +74,15 @@ class SnakeViewModel: ViewModel() {
         direction = dir
     }
     fun reset(){
-
+        resetStatus = true
+        gameStatus.postValue(GameStatus.ONGOING)
+        direction = Direction.LEFT
+        snakeBody.removeAll(snakeBody)
+        body.postValue(snakeBody)
+        scorePoint = 0
+        /*initialDelay = 0
+        period = 100000000*/
+        start()
     }
 
     fun generateApple(){

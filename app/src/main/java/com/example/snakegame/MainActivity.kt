@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         down.setOnClickListener { viewModel.move(dir = Direction.DOWN) }
         left.setOnClickListener { viewModel.move(dir = Direction.LEFT) }
         right.setOnClickListener { viewModel.move(dir = Direction.RIGHT) }
-        binding.replay.setOnClickListener { view ->
+        contentbinding.replay.setOnClickListener { view ->
             viewModel.reset()
         }
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.snakegame">
+    package="com.example.snakegame" >
 
     <application
         android:allowBackup="true"
@@ -8,12 +8,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SnakeGame">
+        android:theme="@style/Theme.SnakeGame" >
+        <activity
+            android:name=".MainActivity2"
+            android:exported="false"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/Theme.SnakeGame.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.SnakeGame.NoActionBar">
+            android:theme="@style/Theme.SnakeGame.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
